@@ -4,9 +4,8 @@ block content
   h1= title
 
   ul
-    each author in author_list
+    each genre in genre_list
       li
-        a(href=author.url) #{author.name}
-        |  (#{author.date_of_birth} - #{author.date_of_death})
+        a(href=genre.url) #{genre.name}
     else
-      li There are no authors
+      li There are no genres

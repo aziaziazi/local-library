@@ -1,14 +1,32 @@
 extends layout
 
 block content
-  h1 Genre: #{genre.name}
+  h1 Title: #{book.title}
+  p #[strong Author:]
+    a(href=book.author.url)  #{book.author.name}
+  p #[strong Summary:] #{book.summary}
+  p #[strong ISBN:] #{book.isbn}
+  p #[strong Genre:]
+    each genre, index in book.genre
+      a(href=genre.url)  #{genre.name}
+      if index < book.genre.length - 1
+        |,
 
   div(style='margin-left: 20px; margin-top: 20px')
-    h4 Books
-    dl
-      each book in genre_books
-        dt
-          a(href=book.url) #{book.title}
-        dd #{book.summary}
+    h4 Copies
+    each book_instance in book_instances
+      hr
+      if book_instance.status== 'Available'
+        p.text-success #{book_instance.status}
+      else if book_instance.status == 'Maintenance'
+        p.text-danger #{book_instance.status}
       else
-        p This genre has no books
+        p.text-warning #{book_instance.status}
+      p #[strong Imprint:] #{book_instance.imprint}
+      if book_instance.status!='Available'
+        p #[strong Due back:] #{book_instance.due_back_formatted}
+      p #[strong Id:]
+        a(href=book_instance.url) #{book_instance._id}
+
+    else
+      p This book has no copies

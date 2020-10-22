@@ -1,15 +1,18 @@
 extends layout
 
 block content
-  h1 Author: #{author.name}
-  p #{author.lifespan}
+  h1 ID: #{book_instance._id}
 
-  div(style='margin-left: 20px; margin-top: 20px')
-    h4 Books
-    dl
-      each book in author_books
-        dt
-          a(href=book.url) #{book.title}
-        dd #{book.summary}
-      else
-        p This author has no books
+  p #[strong Title:]
+    a(href=book_instance.book.url) #{book_instance.book.title}
+  p #[strong Imprint:] #{book_instance.imprint}
+  p #[strong Status:]
+    if book_instance.status=='Available'
+      span.text-success  #{book_instance.status}
+    else if book_instance.status=='Maintenance'
+      span.text-danger  #{book_instance.status}
+    else
+      span.text-warning  #{book_instance.status}
+
+  if book_instance.status != 'Available'
+    p #[strong Due back:] #{book_instance.due_back_formatted}
