@@ -97,12 +97,37 @@ exports.author_create_post = [
 
 // Display Author delete form on GET.
 exports.author_delete_get = function(req, res) {
-res.send('NOT IMPLEMENTED: Author delete GET');
+  async.parallel({
+    author: cb => Author.findById(req.params.id).exec(cb),
+    author_books: cb => Book.find({'author': req.params.id}).exec(cb),
+  },(err, {author, author_books}) => {
+    if (err) {return next(err)}
+    if (author === null) {
+      res.redirect('/catalog/authors')
+    }
+
+    res.render('author_delete', {title: 'Delete Author', author, author_books})
+  })
 };
 
 // Handle Author delete on POST.
 exports.author_delete_post = function(req, res) {
-res.send('NOT IMPLEMENTED: Author delete POST');
+  async.parallel({
+    author: cb => Author.findById(req.body.authorid).exec(cb),
+    author_books: cb => Book.find({'author': req.body.authorid}).exec(cb),
+  }, (err, {author, author_books}) => {
+    if (err) {return next(err)}
+
+    if (author_books.length > 0) {
+      res.render('author_delete', {title: 'Delete Author', author, author_books})
+      return
+    } else {
+      Author.findByIdAndRemove(req.body.authorid, (err) => {
+        if (err) { return next(err)}
+        res.redirect('/catalog/authors')
+      })
+    }
+  })
 };
 
 // Display Author update form on GET.
